@@ -162,7 +162,6 @@ def get_coder(model, git_dname, chat_history_file, test_cmd, temperature, oracle
         test_cmd=test_cmd,
         # verbose=True,
         # edit_format="udiff",
-        max_chat_history_tokens=8*1024,
     )
     coder.temperature = temperature
 
