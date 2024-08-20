@@ -263,7 +263,7 @@ Propose changes to update the repo to fix the problem below.
                     ],
                     stream=False
                 )
-                message += upgrade
+                message += upgraded
                 try:
                     coder.run(message)
                 except Exception as coder_err:
