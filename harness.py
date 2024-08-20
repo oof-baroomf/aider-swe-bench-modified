@@ -263,7 +263,7 @@ Propose changes to update the repo to fix the problem below.
                     ],
                     stream=False
                 )
-                message += upgraded
+                message += upgraded.choices[0].message.content
                 try:
                     coder.run(message)
                 except Exception as coder_err:
