@@ -447,10 +447,11 @@ def process_instances(
 
         print("#" * 60)
         # input()
-
-    if threads > 1:
-        gather()
-
+    try:
+        if threads > 1:
+            gather()
+    except subprocess.CalledProcessError as e:
+        print("Exception on process, rc=", e.returncode, "output=", e.output)
 
 def main():
     models_json = Path(".aider.models.json")
