@@ -155,31 +155,41 @@ def get_coder(model, git_dname, chat_history_file, test_cmd, temperature, oracle
 
     dump(git_dname)
 
-    coder = Coder.create(
-        main_model=model,
-        io=io,
-        map_tokens=2048,  # Use 2k tokens for the repo map
-        stream=False,
-        auto_commits=False,  # Don't bother git committing changes
-        fnames=oracle_files,
-        auto_test=True,  # Automatically run the test_cmd after making changes
-        test_cmd=test_cmd,
-        # verbose=True,
-        # edit_format="udiff",
-    )
-    coder.temperature = temperature
+    # Save the current working directory
+    original_cwd = os.getcwd()
 
-    # Take at most 4 steps before giving up.
-    # Usually set to 5, but this reduces API costs.
-    coder.max_reflections = 4
+    try:
+        # Change to the specified directory
+        os.chdir(git_dname)
 
-    # Add announcement lines to the markdown chat log
-    coder.show_announcements()
+        coder = Coder.create(
+            main_model=model,
+            io=io,
+            map_tokens=2048,  # Use 2k tokens for the repo map
+            stream=False,
+            auto_commits=False,  # Don't bother git committing changes
+            fnames=oracle_files,
+            auto_test=True,  # Automatically run the test_cmd after making changes
+            test_cmd=test_cmd,
+            # verbose=True,
+            # edit_format="udiff",
+        )
+        coder.temperature = temperature
 
-    # messages = coder.format_messages()
-    # utils.show_messages(messages)
+        # Take at most 4 steps before giving up.
+        # Usually set to 5, but this reduces API costs.
+        coder.max_reflections = 4
 
-    return coder
+        # Add announcement lines to the markdown chat log
+        coder.show_announcements()
+
+        # messages = coder.format_messages()
+        # utils.show_messages(messages)
+
+        return coder
+    finally:
+        # Change back to the original directory
+        os.chdir(original_cwd)
 
 
 def process_one_instance(entry, num_tries, models, temperature, model_name_or_path, out_dname):
@@ -222,7 +232,7 @@ def process_one_instance(entry, num_tries, models, temperature, model_name_or_pa
         for model in models:
             dump(attempt, model)
 
-            with tempfile.TemporaryDirectory(dir="/mnt/aider") as git_tempdir:
+            with tempfile.TemporaryDirectory(dir=".aider") as git_tempdir:
                 dump(git_tempdir)
                 checkout_repo(git_tempdir, entry)
 
