@@ -1,4 +1,4 @@
 lox
 aider-chat
-git+https://github.com/princeton-nlp/SWE-bench
+git+https://github.com/princeton-nlp/SWE-bench.git@fe2c907d9b89d535b1c16aba489c0d59b241c1d0
 pre-commit
