@@ -265,15 +265,15 @@ Filenames, directory names, file contents, etc may be different than what you're
 Propose changes to update the repo to fix the problem below.
 
 #"""
-                upgraded = client.chat.completions.create(
+                problem_statement = client.chat.completions.create(
                     model="deepseek-coder",
                     messages=[
                         {"role": "system", "content": "You are a helpful assistant"},
                         {"role": "user", "content": "improve the format of this issue and remove junk from it. also add relevant background information so that someone else can quickly fix it. give me NO information or formatting besides just the issue. For example, DO NOT say things like \"Here you go\" or \"Title: xxxx Description: xxxx\" \n\n" + problem_statement},
                     ],
                     stream=False
-                )
-                message += upgraded.choices[0].message.content
+                ).choices[0].message.content
+                message += problem_statement
                 try:
                     coder.run(message)
                 except Exception as coder_err:
